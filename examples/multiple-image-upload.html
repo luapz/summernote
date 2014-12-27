@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>summernote</title>
+  <!-- include jquery -->
+  <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+
+  <!-- include libraries BS3 -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
+  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../dist/summernote.css">
+  <script type="text/javascript" src="../dist/summernote.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      $('.summernote').summernote({
+        height: 200
+
+        onImageUpload: function(files, editor, welEditable) {
+          $.each(files, function(index, value){
+            sendFile(value, editor, welEditable);
+          });
+        }
+      });
+
+      function sendFile(file, editor, welEditable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+          data: data,
+          type: "POST",
+          url: "//image-upload/post",
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(data) {
+            editor.insertImage(welEditable, data.url);
+          }
+      })
+    }
+
+    $('form').on('submit', function (e) {
+      e.preventDefault();
+      alert($('.summernote').code());
+    });
+    });
+  </script>
+</head>
+<body>
+<form>
+  <textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+  <button type="submit" class="btn btn-default">submit</button>
+</form>
+</body>
+</html>
